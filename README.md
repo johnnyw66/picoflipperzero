@@ -27,7 +27,7 @@ Install MicroPython on your Pico and upload the main.py source.
 
 Upload your captured FlipperZero '.sub' file to the top directory of the Pico.
 
-run main.py (automatically run on power reset)
+After editing the 'file_path' in *main.py* to match your '.sub' file - run *main.py* (automatically run on power reset)
 
 
 
