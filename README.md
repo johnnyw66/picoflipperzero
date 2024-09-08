@@ -19,8 +19,9 @@ Gnd from the Pico to GND on the FS1000A
 GPIO16 from the Pico to ADAT on the FS1000A
 
 
-Install MicroPython on your Pico and upload the main.py
-Upload your captured FlipperZero '.sub' file to your Pico.
+Install MicroPython on your Pico and upload the main.py source.
+
+Upload your captured FlipperZero '.sub' file to the top directory of the Pico.
 
 run main.py (automatically run on power reset)
 
