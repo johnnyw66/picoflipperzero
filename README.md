@@ -15,6 +15,8 @@ Can I ring my 433hz Byron door bell by capturing data with a FlipperZero - (Sub-
 
 Wire up a Pico to your 433 Mhz FS1000A (You can buy these from AliExpress for pennies).
 
+![Alt text](fritz.jpg?raw=true "Fritzing")
+
 
 3.3v from the Pico to VCC on the FS1000A
 
