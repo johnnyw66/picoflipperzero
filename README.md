@@ -63,7 +63,7 @@ xmit_data(pd, 1000000, gpio_pin=16)
 ## compress.py
 
 **compress.py** is an alternative to **main.py** - this is my first attempt at compressing the Flipper Data. 
-The main loop bitbang code now has more delays with shift and bitwise operations. This may effect the performance in audio reproduction.
+The main loop bitbang code now has more delays with shift and bitwise operations. This may impact the performance in audio reproduction.
 I ignore any RAW_DATA lines which are not a multiple of 4 bytes - usually those at the end of the data.
 
 
