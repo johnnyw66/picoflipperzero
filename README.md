@@ -18,11 +18,28 @@ Wire up a Pico to your 433 Mhz FS1000A (You can buy these from AliExpress for pe
 ![Alt text](fritz.jpg?raw=true "Fritzing")
 
 
-3.3v from the Pico to VCC on the FS1000A
+## BOM
 
-Gnd from the Pico to GND on the FS1000A
+Component|Quantity|Supplier|Approx Cost
+---------|--------|--------|-----------
+Raspberry Pi W Pico|1|The Pi Hut|£6.00
+FS1000A 433MHz TX Module|1|eBay/Aliexpress|£1.00
 
-GPIO16 from the Pico to ATAD on the FS1000A
+## Wiring
+
+Raspberry Pi W Pico|FS1000A
+---------|--------
+GND|GND
+3.3v|VCC
+GPIO16|ATAD
+
+
+
+
+Note: In the PicoW Python Source Code - Pins are usually reference by their Pico 'GP' Pin names not the Pico board pin numbers.
+
+
+## Instructions
 
 
 Install MicroPython on your Pico and upload the main.py source.
@@ -30,19 +47,34 @@ Install MicroPython on your Pico and upload the main.py source.
 Upload your captured FlipperZero '.sub' file to the top directory of the Pico.
 
 After editing the 'file_path' in **main.py** to match your '.sub' file - run **main.py** (automatically run on power reset).
+```
+file_path = 'doorbell.sub'
+#file_path = 'CarOpen.sub'
+#file_path = 'CarClose.sub'
+#file_path = 'ByronBell.sub'
 
+pd = process_file(file_path)
+# 40 days and 40 nights of hell
+xmit_data(pd, 1000000, gpio_pin=16)
+
+```
 
 
 ## compress.py
 
 **compress.py** is an alternative to **main.py** - this is my first attempt at compressing the Flipper Data. 
-The main loop code now has more delays - which may effect the performance in audio reproduction.
+The main loop bitbang code now has more delays with shift and bitwise operations. This may effect the performance in audio reproduction.
 I ignore any RAW_DATA lines which are not a multiple of 4 bytes - usually those at the end of the data.
 
 
 ## Thanks
 
 Thanks to Derek Jamison for his explanation on the FlipperZero '.sub' RAW_DATA format!
+
+https://github.com/jamisonderek/flipper-zero-tutorials/
+
+https://www.youtube.com/@MrDerekJamison
+
 
 
 
