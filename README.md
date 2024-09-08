@@ -31,5 +31,13 @@ run main.py (automatically run on power reset)
 
 
 
+## compress.py
+
+An alternative to main.py - this is my first attempt at compressing the Flipper Data. 
+The main loop code now has more delays - which may effect the performance in audio reproduction.
+I ignore any RAW_DATA lines which is not a multiple of 4 bytes - usually the end lines.
+
+
+
 
 
