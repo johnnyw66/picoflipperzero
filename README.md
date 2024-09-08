@@ -27,15 +27,21 @@ Install MicroPython on your Pico and upload the main.py source.
 
 Upload your captured FlipperZero '.sub' file to the top directory of the Pico.
 
-After editing the 'file_path' in *main.py* to match your '.sub' file - run *main.py* (automatically run on power reset)
+After editing the 'file_path' in **main.py** to match your '.sub' file - run **main.py** (automatically run on power reset).
 
 
 
 ## compress.py
 
-An alternative to main.py - this is my first attempt at compressing the Flipper Data. 
+**compress.py** is an alternative to **main.py** - this is my first attempt at compressing the Flipper Data. 
 The main loop code now has more delays - which may effect the performance in audio reproduction.
 I ignore any RAW_DATA lines which are not a multiple of 4 bytes - usually those at the end of the data.
+
+
+## Thanks
+
+Thanks to Derek Jamison for his explanation on the FlipperZero '.sub' RAW_DATA format!
+
 
 
 
