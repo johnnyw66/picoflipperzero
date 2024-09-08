@@ -11,7 +11,7 @@ Proof of concept -
 Can I ring my 433hz Byron door bell by capturing data with a FlipperZero - (Sub-Hz App) and playing it back with a Pico and FS1000A?
 
 
-## Instructions
+## Building Instructions
 
 Wire up a Pico to your 433 Mhz FS1000A (You can buy these from AliExpress for pennies).
 
@@ -39,7 +39,7 @@ GPIO16|ATAD
 Note: In the PicoW Python Source Code - Pins are usually reference by their Pico 'GP' Pin names not the Pico board pin numbers.
 
 
-## Instructions
+## Code Instructions
 
 
 Install MicroPython on your Pico and upload the main.py source.
