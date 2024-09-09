@@ -46,7 +46,7 @@ Install MicroPython on your Pico and upload the main.py, replaysub.py, compress.
 
 Upload your captured FlipperZero '.sub' file to the top directory of the Pico.
 
-After editing the 'file_path' in **replaysub.py** to match your '.sub' file - run **main.py** by powe cycling your Pico.
+After editing the 'file_path' in **replaysub.py** to match your '.sub' file - run **main.py** by power cycling your Pico.
 ```
 file_path = 'doorbell.sub'
 #file_path = 'CarOpen.sub'
@@ -60,9 +60,9 @@ xmit_data(pd, 1000000, gpio_pin=16)
 ```
 
 
-## compress.py
+## pioreplay.py
 
-**compress.py** is an alternative to **replaysub.py** - this is my first attempt at compressing the Flipper Data and using PIO.
+**pioreplay.py** is an alternative to **replaysub.py** - this is my first attempt at compressing the Flipper Data and using PIO.
 To run this alternative version - change the import on **main.py** from
 
 ```
@@ -70,7 +70,7 @@ import replaysub
 ```
 to
 ```
-import compress
+import pioreplay
 ```
 
 Running the clock at 2000000Hz - so adjustments are made with the delay data within the PIO instructions.
