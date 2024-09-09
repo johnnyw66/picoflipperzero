@@ -42,11 +42,11 @@ Note: In the PicoW Python Source Code - Pins are usually reference by their Pico
 ## Code Instructions
 
 
-Install MicroPython on your Pico and upload the main.py source.
+Install MicroPython on your Pico and upload the main.py, replaysub.py, compress.py and doorbell.sub source.
 
 Upload your captured FlipperZero '.sub' file to the top directory of the Pico.
 
-After editing the 'file_path' in **main.py** to match your '.sub' file - run **main.py** (automatically run on power reset).
+After editing the 'file_path' in **replaysub.py** to match your '.sub' file - run **main.py** by powe cycling your Pico.
 ```
 file_path = 'doorbell.sub'
 #file_path = 'CarOpen.sub'
@@ -62,7 +62,16 @@ xmit_data(pd, 1000000, gpio_pin=16)
 
 ## compress.py
 
-**compress.py** is an alternative to **main.py** - this is my first attempt at compressing the Flipper Data and using PIO.
+**compress.py** is an alternative to **replaysub.py** - this is my first attempt at compressing the Flipper Data and using PIO.
+To run this alternative version - change the import on **main.py** from
+
+```
+import replaysub
+```
+to
+```
+import compress
+```
 
 Running the clock at 2000000Hz - so adjustments are made with the delay data within the PIO instructions.
 I ignore any RAW_DATA lines which are not a multiple of 4 bytes - usually those at the end of the data.
