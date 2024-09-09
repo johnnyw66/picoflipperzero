@@ -108,7 +108,7 @@ def xmit_compressed_data(data, num_of_plays, gpio_pin = 16):
         xmit_compressed_flat(data,gpio_pin)
         time.sleep(4)
   
-time.sleep(5)
+time.sleep(1)
 file_path = 'doorbell.sub'
 #file_path = 'CarOpen.sub'
 #file_path = 'CarClose.sub'
