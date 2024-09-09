@@ -42,7 +42,7 @@ Note: In the PicoW Python Source Code - Pins are usually reference by their Pico
 ## Code Instructions
 
 
-Install MicroPython on your Pico and upload the main.py, replaysub.py, compress.py and doorbell.sub source.
+Install MicroPython on your Pico and upload the **main.py**, **replaysub.py**, **pioreplay.py** and your own flipper sub source.
 
 Upload your captured FlipperZero '.sub' file to the top directory of the Pico.
 
