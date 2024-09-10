@@ -105,6 +105,14 @@ Since I am running the PIO clock at 2000000Hz - adjustments are made with the de
 I ignore any RAW_DATA lines which are not a multiple of 4 bytes - usually those at the end of the data.
 The PIO instructions produces a closer match to the audio produced by the Flipper, compared to using Python code.
 
+## Further Improvements?
+
+We are still using a Python **for-loop** to step through the data - so this will still be subject to Python's overhead and uncertainity when it comes to making precise timings.
+At some point I intend to use **DMA (Direct Memory Access)** to remove the need for Python to populate the PIO buffer input.
+
+Watch this space!!
+
+
 ## Thanks
 
 Thanks to Derek Jamison for his explanation on the FlipperZero '.sub' RAW_DATA format!
