@@ -65,7 +65,8 @@ Low signals are negative, High signals are positive. Values are in microseconds.
 
 The Python code reads through the strings of raw data in the **sub** file builds an int array.
 
-When playing back the data the code simply sets a single Pico GPIO line appropriately.
+When playing back the data the code simply sets a single Pico GPIO line appropriately using these delay timings between making changes.
+A technique known as **bit-banging**.
 
 ```
 def xmit_flat(data,gpio_pin = 16):
@@ -78,12 +79,15 @@ def xmit_flat(data,gpio_pin = 16):
     
 ```
 
-Using pure Python for bit-banging is generally not ideal due to Python’s inherent performance limitations. Bit-banging, which involves manually toggling GPIO pins at precise timing intervals to simulate communication protocols, requires a high degree of timing accuracy and speed. Python, being an interpreted and high-level language, introduces significant overhead with each operation, making it difficult to achieve the precise, real-time control necessary for tasks like handling fast data transfer rates. Additionally, Python’s garbage collection, dynamic typing, and lack of direct access to hardware registers further complicate achieving the low-latency and consistent timing needed in bit-banging applications. For such tasks, lower-level languages like C or assembly are typically preferred, as they allow for much finer control over timing and hardware interactions.
+
+Using pure Python for **bit-banging** is generally not ideal due to Python’s inherent performance limitations. Bit-banging, which involves manually toggling GPIO pins at precise timing intervals to simulate communication protocols, requires a high degree of timing accuracy and speed. Python, being an interpreted and high-level language, introduces significant overhead with each operation, making it difficult to achieve the precise, real-time control necessary for tasks like handling fast data transfer rates. Additionally, Python’s garbage collection, dynamic typing, and lack of direct access to hardware registers further complicate achieving the low-latency and consistent timing needed in bit-banging applications. For such tasks, lower-level languages like C or assembly are typically preferred, as they allow for much finer control over timing and hardware interactions.
 
 
 
 
 ## And improved version - pioreplay.py
+
+The Programmable I/O (PIO) feature on the Raspberry Pi Pico helps solve the limitations of using pure Python for bit-banging by offloading timing-critical tasks to dedicated hardware. PIO allows for custom, precise control over GPIO pins without relying on the main CPU, eliminating the performance bottlenecks and timing inaccuracies that come with using Python.
 
 **pioreplay.py** is an alternative to **replaysub.py** - this is my first attempt at compressing the Flipper Data and using PIO.
 
