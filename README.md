@@ -131,7 +131,7 @@ def pulse():
 
 ## Further Improvements?
 
-Perhaps speed up the PIO clock?  If I did this I would need to add nop instructions in the two delay loops. This would make any impact of the 5 set up instructions, redundant.
+Perhaps speed up the PIO clock?  If I did this I would need to add nop instructions in the two delay loops. This would reduce timing errors from the 5 set up instructions.
 
 We are still using a Python **for-loop** to step through the data - so this will still be subject to Python's overhead and uncertainity when it comes to making precise timings.
 At some point I intend to use **DMA (Direct Memory Access)** to remove the need for Python to populate the PIO buffer input.
