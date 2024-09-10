@@ -18,19 +18,19 @@ def pulse():
     # Pull a 32-bit value into the OSR (Output Shift Register)
     pull(block)
 
-    in_(osr, 16)  # Shift right by 16 bits, ISR now contains bottom 16 bits of OSR in its top 16 bits
-    in_(isr, 15)  # Shift right ISR by 15 bits into ISR --> (OSR & 0xFFFF)=<<1
-    mov(y, isr)    #   y = BOTTOM 16 bits * 2
-    out(x,17)  #   x = TOP 16 bits * 2
+    in_(osr, 16)      # Shift right by 16 bits, ISR now contains bottom 16 bits of OSR in its top 16 bits
+    in_(isr, 15)      # Shift right ISR by 15 bits into ISR --> (OSR & 0xFFFF)=<<1
+    mov(y, isr)       # y = BOTTOM 16 bits * 2
+    out(x,17)         # x = TOP 16 bits * 2
 
 
-    set(pins, 1)  # 1 cycle: Set the GPIO pin high
+    set(pins, 1)             # 1 cycle: Set the GPIO pin high
     label("high_loop")
     jmp(x_dec, "high_loop")  # 2 cycles per iteration: 1 for decrement, 1 for jump
 
-    set(pins, 0)  # 1 cycle: Set the GPIO pin high
+    set(pins, 0)             # 1 cycle: Set the GPIO pin low
     label("low_loop")
-    jmp(y_dec, "low_loop")  # 2 cycles per iteration: 1 for decrement, 1 for jump
+    jmp(y_dec, "low_loop")   # 2 cycles per iteration: 1 for decrement, 1 for jump
 
 
 def str_arr_to_bytearray(data):
