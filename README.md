@@ -139,7 +139,7 @@ At some point I intend to use **DMA (Direct Memory Access)** to remove the need 
 I will need some external DMA library to help me. Perhaps - https://github.com/rkompass/RPi2040_mPy  ?
 
 I also intend to improve the hardware by using a simple demux chip (CD4051BE). This will allow us to have up to 8 frequencies - supplied through various FS1000A boards. 
-Ultimately - I could have a 'Replay Over MQTT' server - allowing me to playout **sub** files on a home mosquitto server.
+Ultimately - I could have a 'Replay Over MQTT' server - allowing me to playout **sub** files from a home mosquitto server.
 
 Watch this space!!
 
