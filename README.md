@@ -75,6 +75,28 @@ As an example **sub** raw data entry, above, we can see that the data starts wit
 
 
 The Python code reads and parses the **sub** file through the strings of raw data building an int array.
+```
+def process_file(file_path):
+    matched = 0
+    data_line = "RAW_Data: "
+    raw_data = []
+    
+    with open(file_path, 'r', encoding='ascii') as file:
+        for ln, line in enumerate(file):
+            # Strip leading/trailing whitespace (like newline characters)
+            line = line.strip()
+            if line.startswith(data_line):
+                print("Processing line:", ln)
+                
+                # Process each line here
+                data = line[len(data_line):].split(' ')
+                pd = [int(data[i]) for i in range(len(data))]
+
+                raw_data.extend(pd)
+                matched += 1
+                
+    return raw_data
+```
 
 When playing back the data the code simply sets a single Pico GPIO line appropriately using these delay timings between making changes.
 A technique known as **bit-banging**.
