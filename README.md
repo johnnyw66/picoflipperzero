@@ -58,11 +58,35 @@ pd = process_file(file_path)
 xmit_data(pd, 1000000, gpio_pin=16)
 
 ```
+## How it works
+
+The Flipper **sub** files produced, contain raw data lines which are simply paired delay values of high and low signals.
+Low signals are negative, High signals are positive. Values are in microseconds. 
+
+The Python code reads through the strings of raw data in the **sub** file builds an int array.
+
+When playing back the data the code simply sets a single Pico GPIO line appropriately.
+
+```
+def xmit_flat(data,gpio_pin = 16):
+    pin = machine.Pin(gpio_pin, machine.Pin.OUT)
+    for delay in data:
+        pin.value(1 if (delay > 0) else 0)
+        time.sleep_us(abs(delay))
+
+    pin.value(0)
+    
+```
+
+Using pure Python for bit-banging is generally not ideal due to Python’s inherent performance limitations. Bit-banging, which involves manually toggling GPIO pins at precise timing intervals to simulate communication protocols, requires a high degree of timing accuracy and speed. Python, being an interpreted and high-level language, introduces significant overhead with each operation, making it difficult to achieve the precise, real-time control necessary for tasks like handling fast data transfer rates. Additionally, Python’s garbage collection, dynamic typing, and lack of direct access to hardware registers further complicate achieving the low-latency and consistent timing needed in bit-banging applications. For such tasks, lower-level languages like C or assembly are typically preferred, as they allow for much finer control over timing and hardware interactions.
 
 
-## pioreplay.py
+
+
+## And improved version - pioreplay.py
 
 **pioreplay.py** is an alternative to **replaysub.py** - this is my first attempt at compressing the Flipper Data and using PIO.
+
 To run this alternative version - change the import on **main.py** from
 
 ```
@@ -73,9 +97,9 @@ to
 import pioreplay
 ```
 
-Running the clock at 2000000Hz - so adjustments are made with the delay data within the PIO instructions.
+Since I am running the PIO clock at 2000000Hz - adjustments are made with the delay data within the PIO assembler.
 I ignore any RAW_DATA lines which are not a multiple of 4 bytes - usually those at the end of the data.
-This version seems to produce a closer match to the audio produced by a Flipper. 
+The PIO instructions produces a closer match to the audio produced by the Flipper, compared to using Python code.
 
 ## Thanks
 
