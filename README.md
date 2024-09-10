@@ -135,6 +135,8 @@ def pulse():
 We are still using a Python **for-loop** to step through the data - so this will still be subject to Python's overhead and uncertainity when it comes to making precise timings.
 At some point I intend to use **DMA (Direct Memory Access)** to remove the need for Python to populate the PIO buffer input.
 
+I also intend to improve the hardware by using a simple demux chip (CD4051BE). This will allow us to have up to 8 frequencies - through various FS1000A boards. 
+
 Watch this space!!
 
 
