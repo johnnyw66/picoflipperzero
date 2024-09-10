@@ -127,6 +127,23 @@ def pulse():
     jmp(y_dec, "low_loop")   # 2 cycles per iteration: 1 for decrement, 1 for jump
 
 ```
+```
+
+def xmit_compressed_flat(data,gpio_pin = 16):
+    pin = machine.Pin(gpio_pin, machine.Pin.OUT)
+    # Create a StateMachine instance and load the PIO program
+    sm = rp2.StateMachine(0, pulse, freq=2000000, set_base=Pin(gpio_pin))
+    # Start the StateMachine
+    sm.active(1)
+    for i in range(0, len(data), 4):
+        chunk = data[i:i+4]
+        value = struct.unpack('>I', chunk)[0]
+        sm.put(value)
+        
+    sm.active(0)
+    pin.value(0)
+```
+    
 
 
 ## Further Improvements?
