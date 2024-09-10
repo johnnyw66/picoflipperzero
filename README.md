@@ -1,11 +1,11 @@
 # Playing back FlipperZero files using a Raspberry Pi Pico
 
-![Alt text](flipperzero.png?raw=true "FlipperZero")
+![Alt text](flipperzero.png?raw=true "FlipperZero")![Alt text](pico.jpg?raw=true "Pico") ![Alt text](fs1000a.png?raw=true "FS1000A")
+
 
 Playing back FlipperZero sub files using a Pico (running MicroPython) and a FS1000A 433Mhz TX board
 
 
-![Alt text](pico.jpg?raw=true "Pico") ![Alt text](fs1000a.png?raw=true "FS1000A")
 
 
 
