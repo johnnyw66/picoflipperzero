@@ -1,4 +1,4 @@
-# picoflipperzero
+# Playing back FlipperZero files using a Raspberry Pi Pico
 
 ![Alt text](flipperzero.png?raw=true "FlipperZero")
 
