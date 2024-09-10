@@ -1,4 +1,7 @@
 # picoflipperzero
+
+![Alt text](flipperzero.png?raw=true "FlipperZero")
+
 Playing back FlipperZero sub files using a Pico (running MicroPython) and a FS1000A 433Mhz TX board
 
 
