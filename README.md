@@ -85,7 +85,7 @@ Using pure Python for **bit-banging** is generally not ideal due to Python’s i
 
 
 
-## And improved version - pioreplay.py
+## An improved version - pioreplay.py
 
 The Programmable I/O (PIO) feature on the Raspberry Pi Pico helps solve the limitations of using pure Python for bit-banging by offloading timing-critical tasks to dedicated hardware. PIO allows for custom, precise control over GPIO pins without relying on the main CPU, eliminating the performance bottlenecks and timing inaccuracies that come with using Python.
 
