@@ -169,6 +169,8 @@ def xmit_compressed_flat(data,gpio_pin = 16):
     # Start the StateMachine
     sm.active(1)
     for i in range(0, len(data), 4):
+        # Our data has been compressed by merging the high and low delays into
+        # a single 32 bit value - (each delay is 16 bits in length) 
         chunk = data[i:i+4]
         value = struct.unpack('>I', chunk)[0]
         sm.put(value)
