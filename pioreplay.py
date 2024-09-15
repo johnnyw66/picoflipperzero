@@ -12,9 +12,34 @@ free_ram = gc.mem_free()
 
 print("Free RAM:bytes", free_ram)
 
-# PIO to play out data entry - 
+# PIOs to play out data entry - 
+
+# Run at 64Mhz
 @rp2.asm_pio(in_shiftdir=rp2.PIO.SHIFT_RIGHT, out_shiftdir=rp2.PIO.SHIFT_LEFT, set_init=rp2.PIO.OUT_LOW)
-def pulse():
+def pulse64Mhz():
+    # Pull a 32-bit value into the OSR (Output Shift Register)
+    pull(block)
+
+    in_(osr, 16)   # Shift right by 16 bits, ISR now contains bottom 16 bits of OSR in its top 16 bits
+    in_(isr, 16)   # Shift right ISR by 16 bits into ISR = (OSR & 0xFFFF)
+    mov(y, isr)    # y = BOTTOM 16 bits * 16
+    out(x,16)  	   # x = TOP 16 bits
+    
+    set(pins, 1)   # 1 cycle: Set the GPIO pin high
+    label("high_loop")
+    nop() [29]
+    nop() [31]
+    jmp(x_dec, "high_loop")  # 64 cycles per iteration:  62 nops/delays + 1 for decrement, 1 for jump
+
+    set(pins, 0)   # 1 cycle: Set the GPIO pin high
+    label("low_loop")
+    nop() [29]
+    nop() [31]
+    jmp(y_dec, "low_loop")  # 64 cycles per iteration:  62 nops/delays + 1 for decrement, 1 for jump
+
+# Run at 2Mhz
+@rp2.asm_pio(in_shiftdir=rp2.PIO.SHIFT_RIGHT, out_shiftdir=rp2.PIO.SHIFT_LEFT, set_init=rp2.PIO.OUT_LOW)
+def pulse2Mhz():
     # Pull a 32-bit value into the OSR (Output Shift Register)
     pull(block)
 
@@ -79,7 +104,7 @@ def usleep(v):
 def xmit_compressed_flat(data,gpio_pin = 16):
     pin = machine.Pin(gpio_pin, machine.Pin.OUT)
     # Create a StateMachine instance and load the PIO program
-    sm = rp2.StateMachine(0, pulse, freq=2000000, set_base=Pin(gpio_pin))
+    sm = rp2.StateMachine(0, pulse64, freq=64*1000000, set_base=Pin(gpio_pin))
     # Start the StateMachine
     sm.active(1)
     for i in range(0, len(data), 4):
@@ -113,6 +138,7 @@ file_path = 'doorbell.sub'
 #file_path = 'CarOpen.sub'
 #file_path = 'CarClose.sub'
 #file_path = 'ByronBell.sub'
+#file_path = 'Bday.sub'
 
 pd = process_file(file_path)
 while True:
