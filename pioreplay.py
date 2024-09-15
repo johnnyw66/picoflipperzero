@@ -60,7 +60,8 @@ def pulse2Mhz():
 
 def str_arr_to_bytearray(data):
     compressed_data = bytearray()
-    return bytearray(b''.join([struct.pack('>H', abs(int(num))) for num in data]))
+    return bytearray(b''.join([struct.pack('>H', min(16383,abs(int(num)))) for num in data]))
+  
 
 
 def str_arr_to_int_arr(arr):
@@ -104,7 +105,7 @@ def usleep(v):
 def xmit_compressed_flat(data,gpio_pin = 16):
     pin = machine.Pin(gpio_pin, machine.Pin.OUT)
     # Create a StateMachine instance and load the PIO program
-    sm = rp2.StateMachine(0, pulse64, freq=64*1000000, set_base=Pin(gpio_pin))
+    sm = rp2.StateMachine(0, pulse64Mhz, freq=64*1000000, set_base=Pin(gpio_pin))
     # Start the StateMachine
     sm.active(1)
     for i in range(0, len(data), 4):
