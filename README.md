@@ -188,7 +188,31 @@ def xmit_compressed_flat(data,gpio_pin = 16):
 ## Further Improvements?
 
 Perhaps speed up the PIO clock?  If I did this I would need to add nop instructions in the two delay loops. This would reduce timing errors from the 5 set up instructions.
+```
+#run at 64Mhz
+@rp2.asm_pio(in_shiftdir=rp2.PIO.SHIFT_RIGHT, out_shiftdir=rp2.PIO.SHIFT_LEFT, set_init=rp2.PIO.OUT_LOW)
+def pulse64Mhz():
+    # Pull a 32-bit value into the OSR (Output Shift Register)
+    pull(block)
 
+    in_(osr, 16)   # Shift right by 16 bits, ISR now contains bottom 16 bits of OSR in its top 16 bits
+    in_(isr, 16)   # Shift right ISR by 16 bits into ISR = (OSR & 0xFFFF)
+    mov(y, isr)    #   y = BOTTOM 16 bits * 16
+    out(x,16)  	   #   x = TOP 16 bits
+    
+    set(pins, 1)   # 1 cycle: Set the GPIO pin high
+    label("high_loop")
+    nop() [29]
+    nop() [31]
+    jmp(x_dec, "high_loop")  # 64 cycles per iteration:  62 nops/delays + 1 for decrement, 1 for jump
+
+    set(pins, 0)   # 1 cycle: Set the GPIO pin high
+    label("low_loop")
+    nop() [29]
+    nop() [31]
+    jmp(y_dec, "low_loop")  # 64 cycles per iteration:  62 nops/delays + 1 for decrement, 1 for jump
+
+```
 We are still using a Python **for-loop** to step through the data - so this will still be subject to Python's overhead and uncertainity when it comes to making precise timings.
 At some point I intend to use **DMA (Direct Memory Access)** to remove the need for Python to populate the PIO buffer input.
 
