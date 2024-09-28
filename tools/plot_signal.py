@@ -140,6 +140,41 @@ def display_distribution(signal_timings, signal_type='High'):
     plt.legend()
     plt.show()
 
+def convert_to_binaryX(pulse_timings, pulse_duration):
+    binary_string = ""
+    
+    # Iterate through the pulse timings
+    for i, duration in enumerate(pulse_timings):
+        if i % 2 == 0:  # High signal
+            if duration >= pulse_duration:
+                binary_string += "1"
+            else:
+                binary_string += "0"
+        else:  # Low signal (usually ignored for binary representation, but can also be checked)
+            if duration >= pulse_duration:
+                binary_string += "1"
+            else:
+                binary_string += "0"
+
+    # Break down into groups of 8 bits (bytes)
+    grouped_bits = [binary_string[i:i+8] for i in range(0, len(binary_string), 8)]
+    
+    return grouped_bits
+
+def convert_to_binary(pulse_timings, pulse_duration):
+    binary_string = ""
+
+    # Iterate through pulse timings in pairs (high, low)
+    for i in range(0, len(pulse_timings), 2):
+        # Check high signal
+        binary_string += '1'*(pulse_timings[i]//pulse_duration) 
+        binary_string += '0'*(pulse_timings[i+1]//pulse_duration)
+
+
+    # Break down into groups of 8 bits (bytes)
+    grouped_bits = [binary_string[i:i + 8] for i in range(0, len(binary_string), 8)]
+
+    return grouped_bits
 
 # Plotting function
 def plot_waveform(time, signal):
@@ -153,11 +188,12 @@ def plot_waveform(time, signal):
 
 # Usage example
 filename = 'doorbell.sub'  # Replace with your file
-filename = 'princeton24.sub'  # Replace with your file
+#filename = 'princeton24.sub'  # Replace with your file
+pulse_duration = 300
 
 frame = 3
 pulse_timings = load_data(filename, frame)
-pulse_timings = pulse_timings[0:99]
+pulse_timings = pulse_timings[0:100]
 
 if pulse_timings:
     # Analyze subsection (e.g., first 20 pulses)
@@ -171,8 +207,11 @@ if pulse_timings:
     #display_distribution(high_signals, 'High')
     #display_distribution(low_signals, 'Low')
     #display_distributions(subsection, high_signals, low_signals)
+    binary_groups = convert_to_binary(pulse_timings, pulse_duration)
+    print("Binary groups:", binary_groups)
+
+
 else:
     print("No pulse timings to analyze.")
 
-#plot_waveform(time, signal)
 
