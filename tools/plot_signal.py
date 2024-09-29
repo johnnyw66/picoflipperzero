@@ -140,35 +140,64 @@ def display_distribution(signal_timings, signal_type='High'):
     plt.legend()
     plt.show()
 
-def convert_to_binaryX(pulse_timings, pulse_duration):
-    binary_string = ""
-    
-    # Iterate through the pulse timings
-    for i, duration in enumerate(pulse_timings):
-        if i % 2 == 0:  # High signal
-            if duration >= pulse_duration:
-                binary_string += "1"
-            else:
-                binary_string += "0"
-        else:  # Low signal (usually ignored for binary representation, but can also be checked)
-            if duration >= pulse_duration:
-                binary_string += "1"
-            else:
-                binary_string += "0"
 
-    # Break down into groups of 8 bits (bytes)
-    grouped_bits = [binary_string[i:i+8] for i in range(0, len(binary_string), 8)]
+def find_repeating_patternsX(binary_groups):
+    # Concatenate all binary groups into a single string
+    concatenated_string = ''.join(binary_groups)
     
-    return grouped_bits
+    patterns = {}
+    
+    # Check for repeating patterns
+    length = len(concatenated_string)
+    
+    for size in range(1, length // 2 + 1):  # Check for pattern sizes
+        for start in range(length - size):  # Check each position
+            pattern = concatenated_string[start:start + size]
+            if concatenated_string.count(pattern) > 1:  # Check if pattern repeats
+                if pattern in patterns:
+                    patterns[pattern] += 1
+                else:
+                    patterns[pattern] = 1
+    
+    # Filter to show only patterns that repeat
+    repeating_patterns = {k: v for k, v in patterns.items() if v > 1}
+    
+    return repeating_patterns
+
+def find_long_repeating_patterns(binary_groups, min_length=12):
+    # Concatenate all binary groups into a single string
+    concatenated_string = ''.join(binary_groups)
+    
+    patterns = {}
+    length = len(concatenated_string)
+    
+    # Check for repeating patterns of at least min_length
+    for size in range(min_length, length // 2 + 1):  # Starting from min_length
+        for start in range(length - size):  # Check each position
+            pattern = concatenated_string[start:start + size]
+            if concatenated_string.count(pattern) > 1:  # Check if pattern repeats
+                if pattern in patterns:
+                    patterns[pattern] += 1
+                else:
+                    patterns[pattern] = 1
+    
+    # Filter to show only patterns that repeat
+    repeating_patterns = {k: v for k, v in patterns.items() if v > 1}
+    
+    return repeating_patterns
 
 def convert_to_binary(pulse_timings, pulse_duration):
     binary_string = ""
-
+    pulse_duration = 290
     # Iterate through pulse timings in pairs (high, low)
     for i in range(0, len(pulse_timings), 2):
         # Check high signal
-        binary_string += '1'*(pulse_timings[i]//pulse_duration) 
-        binary_string += '0'*(pulse_timings[i+1]//pulse_duration)
+        #print(pulse_timings[i], pulse_timings[i + 1])
+        hbstr = '1'*(pulse_timings[i]//pulse_duration)
+        lbstr = '0'*(pulse_timings[i+1]//pulse_duration)
+        #print("HIGH DURATION ", pulse_timings[i], hbstr)
+        #print("LOW DURATION ", pulse_timings[i + 1], lbstr)
+        binary_string += (hbstr + lbstr)
 
 
     # Break down into groups of 8 bits (bytes)
@@ -189,26 +218,37 @@ def plot_waveform(time, signal):
 # Usage example
 filename = 'doorbell.sub'  # Replace with your file
 #filename = 'princeton24.sub'  # Replace with your file
-pulse_duration = 300
+# 326 us, 16 bits
+# 320 us, 19 bits
+# 316 us, 22 bits
+
+pulse_duration = 320
+num_bits = 24
 
 frame = 3
 pulse_timings = load_data(filename, frame)
-pulse_timings = pulse_timings[0:100]
+pulse_timings = pulse_timings[24:74]
 
 if pulse_timings:
     # Analyze subsection (e.g., first 20 pulses)
     signal_timings, high_signals, low_signals = analyse_pulse_subsection(pulse_timings, start=0)
 
     time, signal = convert_to_waveform(signal_timings)
-
-    display_distributions(time, signal, high_signals, low_signals)
-    
-    # Display statistics and distribution for high and low signals
-    #display_distribution(high_signals, 'High')
-    #display_distribution(low_signals, 'Low')
-    #display_distributions(subsection, high_signals, low_signals)
     binary_groups = convert_to_binary(pulse_timings, pulse_duration)
-    print("Binary groups:", binary_groups)
+    print(binary_groups)
+
+    if (True):
+        display_distributions(time, signal, high_signals, low_signals)
+    if (False):
+        print(f"Finding {num_bits}- bit patterns. Please wait....")
+        # Find single repeating bit pattern
+        for pulse_duration in range(280,5000):
+            binary_groups = convert_to_binary(pulse_timings, pulse_duration)
+            repeating_patterns = find_long_repeating_patterns(binary_groups, num_bits)
+            if (len(repeating_patterns) == 1):
+                print("Repeating patterns: #", len(repeating_patterns), "With pulse duration ", pulse_duration, " and bits ", num_bits)
+                print(repeating_patterns)
+                exit(-1)
 
 
 else:
