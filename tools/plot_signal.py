@@ -1,12 +1,17 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import argparse
+import logging
 
 def str_arr_to_int_arr(arr):
     # String array to int array
     return [abs(int(arr[i])) for i in range(len(arr))]
 
-# Load the pulse timings (in microseconds) from a file
+# Parse Raw data from FlipperZero sub files.
+# Load the pulse timings (in microseconds) 
 # Assume data is a sequence of high/low durations: [high, low, high, low, ...]
+# Low durations are negative.
+
 def load_data(file_path, frame=1):
     matched = 0
     data_line = "RAW_Data: "
@@ -20,15 +25,15 @@ def load_data(file_path, frame=1):
             line = line.strip()
 
             if line.startswith(data_line):
-                print("Processing line:", ln)
+                logging.info("Processing line: {ln}")
                 
                 # Process each line here
                 data = line[len(data_line):].split(' ')
                 # pair_adjacent_element() Useful for spitting out to a CSV file.
                 pd = str_arr_to_int_arr(data)
-                print("Line ", ln, " length ",len(pd))
+                logging.info("Line , {ln}, length ,{len(pd)}")
                 if ((len(pd) % 2 == 0) and matched==frame):
-                    print(f"Adding Line {ln}")
+                    logging.info(f"Adding Line {ln}")
                     raw_data.extend(pd)
                 matched += 1
                 
@@ -39,7 +44,7 @@ def load_data(file_path, frame=1):
 # Convert the timings to a time vs signal list for plotting
 def convert_to_waveform(pulse_timings):
     if not pulse_timings:
-        print("No data to process.")
+        logging.info("No data to process.")
         return [], []
     
     time = [0]  # start time at 0
@@ -75,15 +80,15 @@ def analyse_pulse_subsection(pulse_timings, start=0, end=None):
 # Function to display signal waveform and histograms
 def display_distributions(time, signal, high_signals, low_signals):
     if not signal:
-        print("No signals in this subsection.")
+        logging.info("No signals in this subsection.")
         return
     
     # Compute min, max, unique values for high and low
     min_high, max_high, unique_high = np.min(high_signals), np.max(high_signals), len(set(high_signals))
     min_low, max_low, unique_low = np.min(low_signals), np.max(low_signals), len(set(low_signals))
     
-    print(f"High: Min: {min_high}, Max: {max_high}, Unique: {unique_high}")
-    print(f"Low: Min: {min_low}, Max: {max_low}, Unique: {unique_low}")
+    logging.info(f"High: Min: {min_high}, Max: {max_high}, Unique: {unique_high}")
+    logging.info(f"Low: Min: {min_low}, Max: {max_low}, Unique: {unique_low}")
     
     # Create subplots to display 3 windows
     fig, axs = plt.subplots(3, 1, figsize=(8, 12))
@@ -113,32 +118,6 @@ def display_distributions(time, signal, high_signals, low_signals):
     plt.show()
 
 
-
-def display_distribution(signal_timings, signal_type='High'):
-    if not signal_timings:
-        print(f"No {signal_type} signals in this subsection.")
-        return
-    
-    mean_time = np.mean(signal_timings)
-    median_time = np.median(signal_timings)
-    min_time = np.min(signal_timings)
-    max_time = np.max(signal_timings)
-    unique_values = len(set(signal_timings))
-    
-    print(f"{signal_type} Signals:")
-    print(f"Mean Time: {mean_time:.2f} microseconds")
-    print(f"Median Time: {median_time:.2f} microseconds")
-    print(f"Min Time: {min_time} microseconds")
-    print(f"Max Time: {max_time} microseconds")
-    print(f"Number of Unique Values: {unique_values}")
-    
-    # Plot the distribution using a histogram
-    plt.hist(signal_timings, bins='auto', alpha=0.7, label=f'{signal_type} Signals')
-    plt.xlabel('Time (microseconds)')
-    plt.ylabel('Frequency')
-    plt.title(f'Distribution of {signal_type} Signal Durations')
-    plt.legend()
-    plt.show()
 
 
 def find_repeating_patternsX(binary_groups):
@@ -192,11 +171,11 @@ def convert_to_binary(pulse_timings, pulse_duration):
     # Iterate through pulse timings in pairs (high, low)
     for i in range(0, len(pulse_timings), 2):
         # Check high signal
-        #print(pulse_timings[i], pulse_timings[i + 1])
+        #xrint(pulse_timings[i], pulse_timings[i + 1])
         hbstr = '1'*(pulse_timings[i]//pulse_duration)
         lbstr = '0'*(pulse_timings[i+1]//pulse_duration)
-        #print("HIGH DURATION ", pulse_timings[i], hbstr)
-        #print("LOW DURATION ", pulse_timings[i + 1], lbstr)
+        #xrint("HIGH DURATION ", pulse_timings[i], hbstr)
+        #xrint("LOW DURATION ", pulse_timings[i + 1], lbstr)
         binary_string += (hbstr + lbstr)
 
 
@@ -215,43 +194,64 @@ def plot_waveform(time, signal):
     plt.grid(True)
     plt.show()
 
-# Usage example
-filename = 'doorbell.sub'  # Replace with your file
-#filename = 'princeton24.sub'  # Replace with your file
+
+logging.basicConfig(format='%(name)s %(levelname)s: %(asctime)s: %(message)s', level=logging.DEBUG)
+logging.getLogger('matplotlib').setLevel(logging.WARNING)
+
+parser = argparse.ArgumentParser(description="Plot Signals Tool",
+                                        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser.add_argument("-s", "--search", action='store_true',default=False, help="Try and search for repeating bit pattern")
+parser.add_argument("-d", "--display",  action='store_false', default=True, help="Display distributions")
+parser.add_argument("-p", "--pulse-duration", default=320, help="Pulse Duration")
+parser.add_argument("-b", "--bits", default=24, help="protocol bit length")
+parser.add_argument("-st", "--start", default=24, help="start")
+parser.add_argument("-e", "--end", default=74, help="end")
+parser.add_argument("-f", "--frame", default=3, help="Frame")
+parser.add_argument("-i", "--input", default="doorbell.sub", help="Input file")
+
+args = parser.parse_args()
+arg_config = vars(args)
+
+
 # 326 us, 16 bits
 # 320 us, 19 bits
 # 316 us, 22 bits
 
-pulse_duration = 320
-num_bits = 24
+filename = arg_config['input']  # Replace with your file
+#filename = 'princeton24.sub'  # Replace with your file
+search_pattern = arg_config['search']
+display_dist = arg_config['display']
+pulse_duration = arg_config['pulse_duration']
+num_bits = arg_config['bits']
+start_pulse = arg_config['start']
+end_pulse = arg_config['end']
+frame = arg_config['frame']
 
-frame = 3
 pulse_timings = load_data(filename, frame)
-pulse_timings = pulse_timings[24:74]
+pulse_timings = pulse_timings[start_pulse:end_pulse]
 
 if pulse_timings:
-    # Analyze subsection (e.g., first 20 pulses)
     signal_timings, high_signals, low_signals = analyse_pulse_subsection(pulse_timings, start=0)
 
     time, signal = convert_to_waveform(signal_timings)
     binary_groups = convert_to_binary(pulse_timings, pulse_duration)
-    print(binary_groups)
+    logging.info(f"{binary_groups}")
 
-    if (True):
+    if (display_dist):
         display_distributions(time, signal, high_signals, low_signals)
-    if (False):
-        print(f"Finding {num_bits}- bit patterns. Please wait....")
+    if (search_pattern):
+        logging.info(f"Finding {num_bits}- bit patterns. Please wait....")
         # Find single repeating bit pattern
         for pulse_duration in range(280,5000):
             binary_groups = convert_to_binary(pulse_timings, pulse_duration)
             repeating_patterns = find_long_repeating_patterns(binary_groups, num_bits)
             if (len(repeating_patterns) == 1):
-                print("Repeating patterns: #", len(repeating_patterns), "With pulse duration ", pulse_duration, " and bits ", num_bits)
-                print(repeating_patterns)
+                logging.info("fRepeating patterns: #, {len(repeating_patterns)}, With pulse duration , {pulse_duration},  and bits , {num_bits}")
+                logging.info("{repeating_patterns}")
                 exit(-1)
 
 
 else:
-    print("No pulse timings to analyze.")
+    logging.info("No pulse timings to analyze.")
 
 
