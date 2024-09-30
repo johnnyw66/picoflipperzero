@@ -3,26 +3,30 @@
 
 
 ```
-def process_file(file_path):
-    matched = 0
-    data_line = "RAW_Data: "
-    raw_data = []
-    
-    with open(file_path, 'r', encoding='ascii') as file:
-        for ln, line in enumerate(file):
-            # Strip leading/trailing whitespace (like newline characters)
-            line = line.strip()
-            if line.startswith(data_line):
-                print("Processing line:", ln)
-                
-                # Process each line here
-                data = line[len(data_line):].split(' ')
-                pd = [int(data[i]) for i in range(len(data))]
 
-                raw_data.extend(pd)
-                matched += 1
-                
-    return raw_data
+Usage: plot_signal.py [-h] [-s] [-d] [-p PULSE_DURATION] [-b BITS] [-st START] [-e END] [-f FRAME] [-i INPUT]
+
+Plot Signals Tool
+
+options:
+  -h, --help            show this help message and exit
+  -s, --search          Try and search for repeating bit pattern (default: False)
+  -d, --display         Display distributions (default: True)
+  -p PULSE_DURATION, --pulse-duration PULSE_DURATION
+                        Pulse Duration (default: 320)
+  -b BITS, --bits BITS  protocol bit length (default: 24)
+  -st START, --start START
+                        start (default: 24)
+  -e END, --end END     end (default: 74)
+  -f FRAME, --frame FRAME
+                        Frame (default: 3)
+  -i INPUT, --input INPUT
+                        Input file (default: doorbell.sub)
+
+Example:
+
+python3 plot_signal.py -f 3  -i ./doorbell.sub 
+
 ```
 
 
