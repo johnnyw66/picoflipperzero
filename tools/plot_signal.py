@@ -25,13 +25,13 @@ def load_data(file_path, frame=1):
             line = line.strip()
 
             if line.startswith(data_line):
-                logging.info("Processing line: {ln}")
+                logging.info(f"Processing line: {ln}")
                 
                 # Process each line here
                 data = line[len(data_line):].split(' ')
                 # pair_adjacent_element() Useful for spitting out to a CSV file.
                 pd = str_arr_to_int_arr(data)
-                logging.info("Line , {ln}, length ,{len(pd)}")
+                logging.info(f"Line , {ln}, length ,{len(pd)}")
                 if ((len(pd) % 2 == 0) and matched==frame):
                     logging.info(f"Adding Line {ln}")
                     raw_data.extend(pd)
@@ -221,11 +221,11 @@ filename = arg_config['input']  # Replace with your file
 #filename = 'princeton24.sub'  # Replace with your file
 search_pattern = arg_config['search']
 display_dist = arg_config['display']
-pulse_duration = arg_config['pulse_duration']
-num_bits = arg_config['bits']
-start_pulse = arg_config['start']
-end_pulse = arg_config['end']
-frame = arg_config['frame']
+pulse_duration = int(arg_config['pulse_duration'])
+num_bits = int(arg_config['bits'])
+start_pulse = int(arg_config['start'])
+end_pulse = int(arg_config['end'])
+frame = int(arg_config['frame'])
 
 pulse_timings = load_data(filename, frame)
 pulse_timings = pulse_timings[start_pulse:end_pulse]
