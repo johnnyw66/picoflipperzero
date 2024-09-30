@@ -11,17 +11,18 @@ Plot Signals Tool
 options:
   -h, --help            show this help message and exit
   -s, --search          Try and search for repeating bit pattern (default: False)
-  -d, --display         Display distributions (default: True)
+  -d, --disable         Disable distributions plot (default: True)
   -p PULSE_DURATION, --pulse-duration PULSE_DURATION
-                        Pulse Duration (default: 320)
-  -b BITS, --bits BITS  protocol bit length (default: 24)
+                        Pulse Duration (default: 270)
+  -b BITS, --bits BITS  Protocol bit length (default: 24)
   -st START, --start START
-                        start (default: 24)
-  -e END, --end END     end (default: 74)
+                        start (default: 22)
+  -e END, --end END     end (default: 124)
   -f FRAME, --frame FRAME
-                        Frame (default: 3)
+                        Frame number (512 chunk) (default: 1)
   -i INPUT, --input INPUT
-                        Input file (default: doorbell.sub)
+                        Input file (default: example.sub)
+
 
 Example:
 
