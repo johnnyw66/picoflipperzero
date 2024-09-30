@@ -201,13 +201,13 @@ logging.getLogger('matplotlib').setLevel(logging.WARNING)
 parser = argparse.ArgumentParser(description="Plot Signals Tool",
                                         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument("-s", "--search", action='store_true',default=False, help="Try and search for repeating bit pattern")
-parser.add_argument("-d", "--display",  action='store_false', default=True, help="Display distributions")
-parser.add_argument("-p", "--pulse-duration", default=320, help="Pulse Duration")
-parser.add_argument("-b", "--bits", default=24, help="protocol bit length")
-parser.add_argument("-st", "--start", default=24, help="start")
-parser.add_argument("-e", "--end", default=74, help="end")
-parser.add_argument("-f", "--frame", default=3, help="Frame")
-parser.add_argument("-i", "--input", default="doorbell.sub", help="Input file")
+parser.add_argument("-d", "--disable",  action='store_false', default=True, help="Disable distributions plot")
+parser.add_argument("-p", "--pulse-duration", default=270, help="Pulse Duration")
+parser.add_argument("-b", "--bits", default=24, help="Protocol bit length")
+parser.add_argument("-st", "--start", default=22, help="start")
+parser.add_argument("-e", "--end", default=124, help="end")
+parser.add_argument("-f", "--frame", default=1, help="Frame number (512 chunk)")
+parser.add_argument("-i", "--input", default="example.sub", help="Input file")
 
 args = parser.parse_args()
 arg_config = vars(args)
@@ -217,15 +217,16 @@ arg_config = vars(args)
 # 320 us, 19 bits
 # 316 us, 22 bits
 
-filename = arg_config['input']  # Replace with your file
-#filename = 'princeton24.sub'  # Replace with your file
+filename = arg_config['input']
 search_pattern = arg_config['search']
-display_dist = arg_config['display']
+display_dist = arg_config['disable']
 pulse_duration = int(arg_config['pulse_duration'])
 num_bits = int(arg_config['bits'])
 start_pulse = int(arg_config['start'])
 end_pulse = int(arg_config['end'])
 frame = int(arg_config['frame'])
+
+logging.info(f"File: {filename}, Frame: {frame}, Start: {start_pulse}, End: {end_pulse}, Bits: {num_bits}")
 
 pulse_timings = load_data(filename, frame)
 pulse_timings = pulse_timings[start_pulse:end_pulse]
@@ -242,7 +243,7 @@ if pulse_timings:
     if (search_pattern):
         logging.info(f"Finding {num_bits}- bit patterns. Please wait....")
         # Find single repeating bit pattern
-        for pulse_duration in range(280,5000):
+        for pulse_duration in range(260,5000):
             binary_groups = convert_to_binary(pulse_timings, pulse_duration)
             repeating_patterns = find_long_repeating_patterns(binary_groups, num_bits)
             if (len(repeating_patterns) == 1):
